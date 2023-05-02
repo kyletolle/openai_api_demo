@@ -48,6 +48,30 @@ app.post('/summarize', async (req, res) => {
   }
 });
 
+app.post('/sentiment', async (req, res) => {
+  const message = req.body.message;
+  if (!message) {
+    return res.status(400).json({ error: 'Message is required' });
+  }
+
+  const promptText = `The sentiment of the following message is:\n${message}`;
+
+  try {
+    const response = await openai.createCompletion({
+      model: 'text-davinci-003',
+      prompt: promptText,
+      temperature: 0,
+      max_tokens: 10,
+    });
+
+    const sentiment = response.data.choices[0].text.trim();
+    res.json({ sentiment });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'An error occurred while detecting the sentiment' });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
