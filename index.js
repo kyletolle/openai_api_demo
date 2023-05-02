@@ -73,24 +73,26 @@ app.post('/sentiment', async (req, res) => {
 });
 
 app.post('/generate-chapters', async (req, res) => {
-  const transcript = req.body.transcript;
-  if (!transcript) {
-    return res.status(400).json({ error: 'Transcript is required' });
-  }
-
-  const promptText = `Given a video transcript with timestamps, create video chapters with titles and timestamps. The response should be in JSON format for easy programming use. Here is the transcript:\n${transcript}`;
-
   try {
+    const { transcript } = req.body;
+    const prompt = `Given a video transcript with timestamps, create video chapters with titles and timestamps. The response should be in JSON format for easy programming use. Minify the JSON too. Here is the transcript:\n${transcript.trim()}`;
+
     const response = await openai.createCompletion({
       model: 'text-davinci-003',
-      prompt: promptText,
-      temperature: 0.5,
-      max_tokens: 1024,
+      prompt,
+      max_tokens: 500,
+      n: 1,
+      stop: null,
+      temperature: 0.7,
     });
 
-    const chapters = response.data.choices[0].text.trim().split('\n');
-    res.json({ chapters });
-    console.info(chapters)
+    const generatedText = response.data.choices[0].text.trim();
+    console.info('Generated text:', generatedText);
+
+    // Parse the JSON string into an array of objects
+    const chapters = JSON.parse(generatedText).chapters;
+
+    res.json(chapters);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'An error occurred while generating chapters' });

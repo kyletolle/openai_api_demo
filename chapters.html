@@ -47,11 +47,11 @@
         });
 
         if (response.ok) {
-          const result = await response.json();
+          const chapters = await response.json();
           const chaptersList = document.getElementById('chapters-list');
-          for (const chapter of result.chapters) {
+          for (const chapter of chapters) {
             const listItem = document.createElement('li');
-            listItem.textContent = chapter;
+            listItem.textContent = JSON.stringify(chapter);
             chaptersList.appendChild(listItem);
           }
           const endTime = Date.now();
