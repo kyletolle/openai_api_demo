@@ -1,12 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Home</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text Summarization</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+  </style>
 </head>
 <body>
-<h1>Home</h1>
-<textarea name="textToSummarize" id="textToSummarize" cols="30" rows="10"></textarea>
-<button>Summarize the above text</button>
+  <h1>Text Summarization</h1>
+  <textarea id="textToSummarize" rows="10" cols="80" placeholder="Enter text to summarize"></textarea>
+  <br>
+  <button id="summarizeButton">Summarize</button>
+  <h2>Summarized Text:</h2>
+  <pre id="summarizedText"></pre>
+
+  <script>
+    const summarizeButton = document.getElementById('summarizeButton');
+    const textToSummarize = document.getElementById('textToSummarize');
+    const summarizedText = document.getElementById('summarizedText');
+
+    summarizeButton.addEventListener('click', async () => {
+      try {
+        const response = await fetch('http://localhost:3000/summarize', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ textToSummarize: textToSummarize.value }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          summarizedText.textContent = data.summarizedText;
+        } else {
+          const error = await response.json();
+          summarizedText.textContent = `Error: ${error.error}`;
+        }
+      } catch (error) {
+        summarizedText.textContent = `Error: ${error.message}`;
+      }
+    });
+  </script>
 </body>
 </html>
