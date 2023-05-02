@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Piratize Text</title>
+</head>
+<body>
+  <h1>Piratize Text</h1>
+  <textarea id="textToPiratize" rows="6" cols="50" placeholder="Enter text to convert into pirate speak"></textarea><br>
+  <button id="piratizeButton">Piratize</button>
+  <h2>Result</h2>
+  <div id="pirateText"></div>
+
+  <script>
+    document.getElementById('piratizeButton').addEventListener('click', async () => {
+      const textToPiratize = document.getElementById('textToPiratize').value;
+      const response = await fetch('http://localhost:3000/piratize', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text: textToPiratize }),
+      });
+      const { pirateText } = await response.json();
+      document.getElementById('pirateText').innerText = pirateText;
+    });
+  </script>
+</body>
+</html>

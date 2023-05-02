@@ -99,6 +99,28 @@ app.post('/generate-chapters', async (req, res) => {
   }
 });
 
+app.post('/piratize', async (req, res) => {
+  try {
+    const { text } = req.body;
+    const prompt = `Translate the following text into pirate speak:\n${text.trim()}`;
+
+    const response = await openai.createCompletion({
+      model: 'text-davinci-003',
+      prompt,
+      max_tokens: 500,
+      n: 1,
+      stop: null,
+      temperature: 0.7,
+    });
+
+    const pirateText = response.data.choices[0].text.trim();
+    res.json({ pirateText });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'An error occurred while generating pirate speak' });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
