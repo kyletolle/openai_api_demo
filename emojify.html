@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emojify Text</title>
+</head>
+<body>
+  <h1>Emojify Text</h1>
+  <textarea id="textToEmojify" rows="6" cols="50" placeholder="Enter text to convert into emojis"></textarea><br>
+  <button id="emojifyButton">Emojify</button>
+  <h2>Result</h2>
+  <div id="emojiText"></div>
+
+  <script>
+    document.getElementById('emojifyButton').addEventListener('click', async () => {
+      const textToEmojify = document.getElementById('textToEmojify').value;
+      const response = await fetch('http://localhost:3000/emojify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text: textToEmojify }),
+      });
+      const { emojiText } = await response.json();
+      document.getElementById('emojiText').innerText = emojiText;
+    });
+  </script>
+</body>
+</html>

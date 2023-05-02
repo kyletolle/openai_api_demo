@@ -121,6 +121,28 @@ app.post('/piratize', async (req, res) => {
   }
 });
 
+app.post('/emojify', async (req, res) => {
+  try {
+    const { text } = req.body;
+    const prompt = `Convert the following text into a short sequence of emojis that best convey the message, feeling, or tone of the text:\n${text.trim()}`;
+
+    const response = await openai.createCompletion({
+      model: 'text-davinci-003',
+      prompt,
+      max_tokens: 50,
+      n: 1,
+      stop: null,
+      temperature: 0.7,
+    });
+
+    const emojiText = response.data.choices[0].text.trim();
+    res.json({ emojiText });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'An error occurred while generating emojis' });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
