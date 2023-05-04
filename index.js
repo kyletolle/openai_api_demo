@@ -143,6 +143,28 @@ app.post('/emojify', async (req, res) => {
   }
 });
 
+app.post('/sentiment-chart', async (req, res) => {
+  try {
+    const { text } = req.body;
+    const prompt = `Analyze the given text for sentiment, then create an ASCII table where the time of the sentiment is given as well as the name of the emotion and an emoji that represents the emotion. Make it a markdown style table with nice formatting. Analyze the following text:\n${text.trim()}`;
+
+    const response = await openai.createCompletion({
+      model: 'text-davinci-003',
+      prompt,
+      max_tokens: 500,
+      n: 1,
+      stop: null,
+      temperature: 0.7,
+    });
+
+    const sentimentChart = response.data.choices[0].text.trim();
+    res.json({ sentimentChart });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'An error occurred while generating the sentiment chart' });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });

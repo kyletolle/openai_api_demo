@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sentiment Chart</title>
+</head>
+<body>
+  <h1>Text Sentiment Chart</h1>
+  <textarea id="textForChart" rows="6" cols="50" placeholder="Enter text to create a sentiment chart"></textarea><br>
+  <button id="generateChartButton">Generate Chart</button>
+  <h2>Result</h2>
+  <pre id="sentimentChart"></pre>
+
+  <script>
+    document.getElementById('generateChartButton').addEventListener('click', async () => {
+      const textForChart = document.getElementById('textForChart').value;
+      const response = await fetch('http://localhost:3000/sentiment-chart', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text: textForChart }),
+      });
+      const { sentimentChart } = await response.json();
+      document.getElementById('sentimentChart').innerText = sentimentChart;
+    });
+  </script>
+</body>
+</html>
